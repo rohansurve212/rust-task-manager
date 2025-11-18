@@ -1,0 +1,56 @@
+[package]
+name = "shared"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rohan Surve rohansurve212@gmail.com"]
+description = "Shared types, models, and utilities for task management services"
+license = "MIT"
+
+# This is a library crate, not a binary
+# It produces a .rlib (Rust library) that other crates link against
+# Python equivalent: a package without __main__.py
+[lib]
+name = "shared"
+path = "src/lib.rs"
+
+[dependencies]
+# Serialization - for converting between Rust types and JSON/proto
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Date/time handling
+chrono = { workspace = true }
+
+# Database - for defining models and queries
+sqlx = { workspace = true }
+
+# gRPC/Protocol Buffers
+# The shared crate contains the proto definitions
+# Both services will use the generated code from here
+prost = { workspace = true }
+tonic = { workspace = true }
+
+# Error Handling
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+
+# Validation - we'll use this in Phase 4 for domain types
+# validator = "0.18"  # Uncomment when we add validation
+
+# UUID generation for IDs
+uuid = { version = "1.10", features = ["v4", "serde"] }
+
+# Regular expressions for validation (Phase 4)
+# regex = "1.10"  # Uncomment when needed
+
+[build-dependencies]
+# Build-time code generation from .proto files
+tonic-build = { workspace = true }
+
+# The build.rs script will compile .proto files into Rust code
+# This generated code will be part of the shared library
+# Both grpc-service and web-service will use it
+
+[dev-dependencies]
+# Testing dependencies for the shared library
+# Will expand in Phase 7

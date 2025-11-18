@@ -1,0 +1,279 @@
+# Makefile.toml - Cargo-make task automation
+# Cargo-make is like Python's Makefile or npm scripts but Rust-native
+# Install with: cargo install cargo-make
+# Run tasks with: cargo make <task-name>
+
+[config]
+# Skip loading default tasks to keep things clean
+skip_core_tasks = true
+# Use a minimum version of cargo-make
+min_version = "0.37.0"
+
+# Default task that runs when you type: cargo make
+[tasks.default]
+alias = "help"
+
+# Help menu - shows available commands
+[tasks.help]
+description = "Show available tasks"
+script = '''
+echo "═══════════════════════════════════════════════════════"
+echo "  Rust Task Management - Available Commands"
+echo "═══════════════════════════════════════════════════════"
+echo ""
+echo "  Setup & Build:"
+echo "    cargo make setup        - Install dependencies & tools"
+echo "    cargo make build        - Build all services (debug)"
+echo "    cargo make build-release - Build optimized binaries"
+echo "    cargo make clean        - Clean build artifacts"
+echo ""
+echo "  Development:"
+echo "    cargo make dev          - Run all services in dev mode"
+echo "    cargo make grpc         - Run gRPC service only"
+echo "    cargo make web          - Run web service only"
+echo ""
+echo "  Database:"
+echo "    cargo make db-setup     - Initialize database"
+echo "    cargo make db-migrate   - Run migrations"
+echo "    cargo make db-reset     - Reset database (destructive)"
+echo ""
+echo "  Code Quality:"
+echo "    cargo make check        - Check code without building"
+echo "    cargo make test         - Run all tests"
+echo "    cargo make fmt          - Format code"
+echo "    cargo make lint         - Run clippy linter"
+echo ""
+echo "  Production:"
+echo "    cargo make docker-build - Build Docker images"
+echo "    cargo make run-prod     - Run in production mode"
+echo ""
+echo "═══════════════════════════════════════════════════════"
+'''
+
+# ============================================================================
+# Setup Tasks
+# ============================================================================
+
+[tasks.setup]
+description = "Install required tools and dependencies"
+script = '''
+echo "🔧 Installing required tools..."
+
+# Check if protoc is installed (needed for gRPC)
+if ! command -v protoc &> /dev/null; then
+    echo "❌ protoc not found. Please install Protocol Buffers compiler:"
+    echo "   macOS: brew install protobuf"
+    echo "   Linux: sudo apt install protobuf-compiler"
+    echo "   Windows: choco install protoc"
+    exit 1
+fi
+
+# Check if cargo-make is installed
+if ! command -v cargo-make &> /dev/null; then
+    echo "📦 Installing cargo-make..."
+    cargo install cargo-make
+fi
+
+# Check if sqlx-cli is installed (for database migrations)
+if ! command -v sqlx &> /dev/null; then
+    echo "📦 Installing sqlx-cli..."
+    cargo install sqlx-cli --no-default-features --features sqlite
+fi
+
+echo "✅ All tools installed successfully!"
+'''
+
+# ============================================================================
+# Build Tasks
+# ============================================================================
+
+[tasks.build]
+description = "Build all workspace members in debug mode"
+command = "cargo"
+args = ["build", "--workspace"]
+
+[tasks.build-release]
+description = "Build all workspace members with optimizations"
+command = "cargo"
+args = ["build", "--workspace", "--release"]
+
+[tasks.clean]
+description = "Remove build artifacts"
+command = "cargo"
+args = ["clean"]
+
+# ============================================================================
+# Development Tasks
+# ============================================================================
+
+[tasks.dev]
+description = "Run all services concurrently (use Ctrl+C to stop)"
+dependencies = ["build"]
+script = '''
+echo "🚀 Starting all services in development mode..."
+echo "   - gRPC service: http://localhost:50051"
+echo "   - Web service:  http://localhost:3000"
+echo ""
+echo "Press Ctrl+C to stop all services"
+echo ""
+
+# This will be uncommented in later phases when we have actual services
+# For now, just show a message
+echo "⚠️  Services not yet implemented (Phase 0)"
+echo "   Run 'cargo make grpc' or 'cargo make web' in later phases"
+'''
+
+[tasks.grpc]
+description = "Run gRPC service only"
+workspace = false
+command = "cargo"
+args = ["run", "--bin", "grpc-service"]
+
+[tasks.web]
+description = "Run web service only"
+workspace = false
+command = "cargo"
+args = ["run", "--bin", "web-service"]
+
+# ============================================================================
+# Database Tasks
+# ============================================================================
+
+[tasks.db-setup]
+description = "Initialize database and create tables"
+script = '''
+echo "🗄️  Initializing SQLite database..."
+mkdir -p data
+# Database setup will be implemented in Phase 1
+echo "⚠️  Database setup not yet implemented (Phase 1)"
+'''
+
+[tasks.db-migrate]
+description = "Run database migrations"
+script = '''
+echo "🔄 Running database migrations..."
+# sqlx migrate run --database-url sqlite:data/tasks.db
+echo "⚠️  Migrations not yet implemented (Phase 1)"
+'''
+
+[tasks.db-reset]
+description = "Drop and recreate database (WARNING: destructive)"
+script = '''
+echo "⚠️  WARNING: This will delete all data!"
+read -p "Are you sure? (y/N): " -n 1 -r
+echo
+if [[ $REPLY =~ ^[Yy]$ ]]; then
+    rm -f data/tasks.db
+    echo "✅ Database deleted"
+    cargo make db-setup
+fi
+'''
+
+# ============================================================================
+# Code Quality Tasks
+# ============================================================================
+
+[tasks.check]
+description = "Check code for errors without building"
+command = "cargo"
+args = ["check", "--workspace"]
+
+[tasks.test]
+description = "Run all tests in workspace"
+command = "cargo"
+args = ["test", "--workspace"]
+
+[tasks.fmt]
+description = "Format all code using rustfmt"
+workspace = false
+command = "cargo"
+args = ["fmt", "--all"]
+
+[tasks.fmt-check]
+description = "Check if code is formatted correctly"
+command = "cargo"
+args = ["fmt", "--all", "--check"]
+
+[tasks.lint]
+description = "Run clippy linter with strict settings"
+command = "cargo"
+args = [
+    "clippy",
+    "--workspace",
+    "--all-targets",
+    "--all-features",
+    "--",
+    "-D", "warnings"  # Treat warnings as errors
+]
+
+[tasks.audit]
+description = "Check dependencies for security vulnerabilities"
+command = "cargo"
+args = ["audit"]
+
+# ============================================================================
+# Testing Tasks (will expand in Phase 7)
+# ============================================================================
+
+[tasks.test-unit]
+description = "Run unit tests only"
+command = "cargo"
+args = ["test", "--workspace", "--lib"]
+
+[tasks.test-integration]
+description = "Run integration tests only"
+command = "cargo"
+args = ["test", "--workspace", "--test", "*"]
+
+[tasks.test-coverage]
+description = "Generate test coverage report"
+script = '''
+echo "📊 Generating test coverage..."
+# Will use tarpaulin or llvm-cov in Phase 7
+echo "⚠️  Coverage not yet configured (Phase 7)"
+'''
+
+# ============================================================================
+# Production Tasks (Phase 8)
+# ============================================================================
+
+[tasks.docker-build]
+description = "Build Docker images for all services"
+script = '''
+echo "🐳 Building Docker images..."
+echo "⚠️  Docker configuration not yet implemented (Phase 8)"
+'''
+
+[tasks.run-prod]
+description = "Run services in production mode"
+dependencies = ["build-release"]
+script = '''
+echo "🚀 Starting services in production mode..."
+echo "⚠️  Production mode not yet configured (Phase 8)"
+'''
+
+# ============================================================================
+# Utility Tasks
+# ============================================================================
+
+[tasks.watch]
+description = "Watch for file changes and rebuild"
+install_crate = { crate_name = "cargo-watch", binary = "cargo-watch", test_arg = "--version" }
+command = "cargo"
+args = ["watch", "-x", "check", "-x", "test"]
+
+[tasks.doc]
+description = "Generate and open documentation"
+command = "cargo"
+args = ["doc", "--workspace", "--no-deps", "--open"]
+
+[tasks.tree]
+description = "Show dependency tree"
+command = "cargo"
+args = ["tree", "--workspace"]
+
+[tasks.outdated]
+description = "Check for outdated dependencies"
+install_crate = { crate_name = "cargo-outdated", binary = "cargo-outdated", test_arg = "--version" }
+command = "cargo"
+args = ["outdated", "--workspace"]

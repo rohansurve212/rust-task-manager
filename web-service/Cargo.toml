@@ -1,0 +1,83 @@
+[package]
+# Package metadata
+name = "web-sevice"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rohan Surve rohansurve212@gmail.com"]
+description = "Web frontend service for task management with HTMX"
+license = "MIT"
+
+# Binary Target - this crate produces an executable
+[[bin]]
+name = "web-service"
+path = "src/main.rs"
+
+[dependencies]
+# reference workspace dependencies
+# Async runtime
+tokio = { workspace = true }
+
+# Web framework - Warp uses "filters" to compose routes
+# Much different from Flask/FastAPI but more type-safe
+warp = { workspace = true }
+
+# Template engine - compiles templates at build time!
+# Unlike Jinja2, template errors are caught during compilation
+askama = { workspace = true, features = ["with-warp"] }
+
+# HTTP client for calling gRPC service
+# We'll use this to communicate with the gRPC backend
+reqwest = { workspace = true }
+
+# gRPC client dependencies
+# The web service acts as a gRPC client
+tonic = { workspace = true }
+prost = { workspace = true }
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Error handling
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# Date/time
+chrono = { workspace = true }
+
+# Configuration
+config = { workspace = true }
+dotenvy = { workspace = true }
+
+# Futures utilities
+futures = { workspace = true }
+
+# Our shared library
+shared = { path = "../shared" }
+
+# Web-specific dependencies (not in workspace, specific to this crate)
+# Cookie and session handling
+cookie = "0.18"
+
+# Form data parsing
+# Warp doesn't include this by default
+serde_urlencoded = "0.7"
+
+# Static file serving helpers
+mime_guess = "2.0"
+
+[build-dependencies]
+# Build-time dependencies for generating gRPC client code
+tonic-build = { workspace = true }
+
+# The web service needs to know about the gRPC interface
+# We'll generate a gRPC client from the same .proto files
+# This ensures type-safety between services
+
+[dev-dependencies]
+# Testing dependencies (Phase 7)
+# For now, empty but ready for expansion

@@ -1,0 +1,67 @@
+[package]
+# Package metadata
+name = "grpc-service"
+version = "0.1.0"
+edition = "2021"
+authors = ["Rohan Surve rohansurve212@gmail.com"]
+description = "gRPC backend service for task management"
+license = "MIT"
+
+# Binary target - this crate produces an executable
+[[bin]]
+name = "grpc-service"
+path = "src/main.rs"
+
+[dependencies]
+# Reference workspace dependencies without version numbers
+# The version is inherited from the root Cargo.toml [workspace.dependencies]
+# This is Rust's way of ensuring version consistency across the workspace
+
+# Async runtime - foundation for async/await
+tokio = { workspace = true }
+
+# gRPC framework
+tonic = { workspace = true }
+prost = { workspace = true }  # Protocol Buffers runtime
+
+# Serialization
+serde = { workspace = true }
+serde_json = { workspace = true }
+
+# Database
+sqlx = { workspace = true }
+
+# Error handling
+thiserror = { workspace = true }
+anyhow = { workspace = true }
+
+# Logging
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+
+# Date/time
+chrono = { workspace = true }
+
+# Configuration
+config = { workspace = true }
+dotenvy = { workspace = true }
+
+# Our shared library
+# Path dependency - points to sibling crate in workspace
+shared = { path = "../shared" }
+
+[build-dependencies]
+# Build-time dependencies - only used during compilation, not in final binary
+# This is a key Rust concept: separate build-time vs runtime dependencies
+tonic-build = { workspace = true }
+
+# This will be used to compile .proto files into Rust code at build time
+# Python equivalent would be running protoc manually in a build script
+
+[dev-dependencies]
+# Dependencies only used for tests
+# Not included in production binary - keeps it small and fast
+# Like Python's "dev" dependencies in setup.py or pyproject.toml
+
+# We'll add testing dependencies in Phase 7
+# For now, this section is empty but good to have the structure

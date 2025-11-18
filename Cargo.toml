@@ -1,0 +1,87 @@
+[workspace]
+# Define all member crates in our workspace
+# Rust will manage these as a unified project with shared dependencies
+members = [
+    "grpc-service",
+    "web-service",
+    "shared",
+]
+
+# Workspace-level dependency resolution
+# This ensures all crates use the same version of dependencies
+# Prevents version conflicts and reduces compile time
+resolver = "2"
+
+# Shared dependencies that all workspace members can use
+# Define versions here once, reference in member crates without version
+[workspace.dependencies]
+# Async runtime - the foundation for async/await in Rust
+# Tokio is like Python's asyncio but with true parallelism (no GIL)
+tokio = { version = "1.41", features = ["full"] }
+
+# Serialization/deserialization - like Python's json module but type-safe
+serde = { version = "1.0", features = ["derive"] }
+serde_json = "1.0"
+
+# gRPC framework built on top of Tokio
+# Tonic generates type-safe Rust code from .proto files
+tonic = "0.12"
+tonic-build = "0.12"
+prost = "0.13" # Protocol Buffers implementation
+
+# Database - async SQLite driver
+# Unlike Python's sqlite3, this is fully async and type-safe
+sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "sqlite"] }
+
+# Web framework - fast and composable using "filters"
+# Warp is like Python's FastAPI but with compile-time route checking
+warp = "0.3"
+
+# Error handling utilities
+# Thiserror simplifies creating custom error types
+# Anyhow is like Python's exception chaining but more explicit
+thiserror = "1.0"
+anyhow = "1.0"
+
+# Logging and tracing - structured logging
+# Much more powerful than Python's logging module
+tracing = "0.1"
+tracing-subscriber = "0.3"
+
+# Template engine for HTML rendering
+# Templates are compiled and checked at build time!
+askama = "0.12"
+
+# Async Utilities
+futures = "0.3"
+
+# Date/time handling - better than Python's datetime
+chrono = { version = "0.4", features = ["serde"] }
+
+# HTTP client for internal service communication
+reqwest = { version = "0.12", features = ["json"] }
+
+# Configuration management
+config = "0.14"
+
+# Password hashing - will use in Phase 5
+argon2 = "0.5"
+
+# Environment variable loading
+dotenvy = "0.15"
+
+[profile.dev]
+# Development profile - prioritize compile speed
+# Rust checks everything at compile time, so dev builds are slower than Python
+opt-level = 0    # No optimization
+debug = true      # Include debug symbols
+split-debuginfo = "unpacked" # Faster debug builds on macOS/Linux
+
+[profile.release]
+# Release profile - prioritize runtime speed
+# This is where Rust shines: 10-100x faster than Python
+opt-level = 3         # Max optimization
+lto = "fat"           # Link-time optimization across all crates
+codegen-units = 1     # Optimize across whole program (slower compile, faster runtime)
+strip = true          # Remove debug symbols (smaller binary)
+panic = "abort"       # Don't unwind on panic (smaller, faster binary)

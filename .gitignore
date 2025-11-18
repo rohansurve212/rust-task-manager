@@ -1,0 +1,202 @@
+# .gitignore - Files and directories to exclude from version control
+
+# ============================================================================
+# Rust Build Artifacts
+# ============================================================================
+
+# The target/ directory contains all compiled code
+# In Python, this is like __pycache__/, .pyc files, and build/
+# Rust puts EVERYTHING in target/ - debug builds, release builds, tests
+/target/
+
+# Cargo.lock for libraries should not be committed (only for binaries)
+# Since this is a workspace with binaries, we WILL commit Cargo.lock
+# Uncomment if this becomes a library-only project:
+# Cargo.lock
+
+# Backup files created by rustfmt
+**/*.rs.bk
+
+# Profiling data
+*.profdata
+
+# ============================================================================
+# Database Files
+# ============================================================================
+
+# SQLite database files (development only)
+# Production databases should never be in version control
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Database directory
+/data/
+
+# ============================================================================
+# Environment and Configuration
+# ============================================================================
+
+# Environment variable files
+# Contains secrets, API keys, database passwords
+.env
+.env.local
+.env.*.local
+
+# Configuration files with secrets
+config/local.toml
+config/secret.toml
+
+# ============================================================================
+# IDE and Editor Files
+# ============================================================================
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# IntelliJ IDEA / CLion / RustRover
+.idea/
+*.iml
+*.iws
+
+# Emacs
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+
+# Vim
+*.swp
+*.swo
+*~
+.*.sw[a-z]
+*.un~
+Session.vim
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# ============================================================================
+# Operating System Files
+# ============================================================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msm
+*.msp
+*.lnk
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================================================
+# Logs and Temporary Files
+# ============================================================================
+
+# Log files
+*.log
+logs/
+*.log.*
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# ============================================================================
+# Documentation Build Artifacts
+# ============================================================================
+
+# Generated documentation
+/target/doc/
+/doc/
+
+# mdBook build output
+/book/
+
+# ============================================================================
+# Testing and Coverage
+# ============================================================================
+
+# Test output
+test-results/
+coverage/
+
+# Tarpaulin coverage
+tarpaulin-report.html
+cobertura.xml
+
+# Criterion benchmark results
+/target/criterion/
+
+# ============================================================================
+# Docker and Deployment
+# ============================================================================
+
+# Docker volumes
+.docker-data/
+
+# Kubernetes secrets
+k8s/secrets/
+
+# ============================================================================
+# Protocol Buffers Generated Code
+# ============================================================================
+
+# We generate proto code at build time, so we don't commit it
+# Some projects commit generated code - we don't
+# generated/
+# proto-gen/
+
+# ============================================================================
+# Rust-Specific
+# ============================================================================
+
+# Rustfmt backup files
+**/*.rs.bk
+
+# Clippy cache
+.clippy.toml
+
+# RLS (Rust Language Server) data
+.rls/
+
+# Rust analyzer
+.rust-analyzer/
+
+# ============================================================================
+# Project-Specific
+# ============================================================================
+
+# Local scripts for development
+/scripts/local/
+
+# Personal notes
+NOTES.md
+TODO.personal.md
