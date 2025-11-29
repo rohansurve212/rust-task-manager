@@ -13,5 +13,5 @@ pub mod connection;
 pub mod repository;
 
 // Re-export commonly used types
-pub use connection::{create_pool, DbPool};
+pub use connection::{create_pool, run_migrations, DbPool};
 pub use repository::TaskRepository;

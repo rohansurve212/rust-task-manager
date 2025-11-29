@@ -31,7 +31,12 @@ prost = "0.13" # Protocol Buffers implementation
 
 # Database - async SQLite driver
 # Unlike Python's sqlite3, this is fully async and type-safe
-sqlx = { version = "0.8", features = ["runtime-tokio-rustls", "sqlite"] }
+sqlx = { version = "0.8", features = [
+    "runtime-tokio-rustls", 
+    "sqlite",
+    "migrate",  # Migration support
+    "chrono",   # DateTime support
+] }
 
 # Web framework - fast and composable using "filters"
 # Warp is like Python's FastAPI but with compile-time route checking

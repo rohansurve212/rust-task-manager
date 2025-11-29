@@ -9,7 +9,7 @@ use sqlx::{Pool, Sqlite};
 use std::str::FromStr;
 use std::time::Duration;
 
-use crate::error::{AppError, AppResult};
+use crate::error::AppResult;
 
 /// Type alias for SQLite connection pool.
 ///
@@ -93,9 +93,12 @@ pub async fn create_pool(database_url: &str) -> AppResult<DbPool> {
 /// }
 /// ```
 pub async fn run_migrations(pool: &DbPool) -> AppResult<()> {
-    // sqlx::migrate! macro embeds migrations at compile time
-    // Migrations are in the `migrations/` directory at project root
-    sqlx::migrate("./migrations").run(pool).await?;
+    // Load migrations from the `migrations/` directory at project root
+    // Migrator reads migration files at runtime
+    sqlx::migrate::Migrator::new(std::path::Path::new("./migrations"))
+        .await?
+        .run(pool)
+        .await?;
 
     Ok(())
 }

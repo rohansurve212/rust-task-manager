@@ -15,6 +15,10 @@ pub enum AppError {
     #[error("Database error: {0}")]
     Database(#[from] sqlx::Error),
 
+    /// Migration-related errors
+    #[error("Migration error: {0}")]
+    Migration(#[from] sqlx::migrate::MigrateError),
+
     /// Task not found in the database
     #[error("Task not found with id: {0}")]
     TaskNotFound(i64),

@@ -14,5 +14,5 @@ pub mod user;
 // Re-export types for easier imports
 // Instead of: use shared::models::task::Task;
 // Users can do: use shared::models::Task
-pub use task::{Task, TaskPriority, TaskStatus};
-pub use user::User;
+pub use task::{CreateTask, Task, TaskPriority, TaskStatus, UpdateTask};
+pub use user::{CreateUser, UpdateUser, User, UserResponse};
